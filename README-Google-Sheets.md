@@ -6,8 +6,11 @@ New_project/
 ├── config.js                  # إعدادات Google Apps Script
 ├── google-apps-script.js      # كود Apps Script
 ├── view-data.html            # صفحة عرض البيانات
+├── setup-guide.md            # دليل الإعداد التفصيلي
+├── troubleshooting.md        # استكشاف الأخطاء
 ├── test/
-│   └── test-google-sheets.html # صفحة اختبار
+│   ├── connection-test.html   # اختبار شامل للاتصال
+│   └── test-google-sheets.html # صفحة اختبار بسيطة
 ├── package.json              # معلومات المشروع
 ├── README-Google-Sheets.md   # هذا الملف
 └── .gitignore               # ملفات مستبعدة
@@ -51,14 +54,14 @@ python -m http.server 8000
 - جرب إنشاء حساب جديد
 - تحقق من ظهور البيانات في Google Sheet
 
-### 6. اختبار منفصل (اختياري)
-- افتح ملف `test/test-google-sheets.html` في المتصفح
-- املأ النموذج واضغط إرسال
-- تحقق من حفظ البيانات في الجدول
+### 6. اختبار منفصل (موصى به)
+- افتح ملف `test/connection-test.html` في المتصفح
+- اضغط على "اختبر الاتصال" للتأكد من الإعداد
+- جرب إرسال بيانات تجريبية
+- اعرض البيانات المحفوظة
 
-### 7. عرض البيانات (اختياري)
-- افتح ملف `view-data.html` في المتصفح
-- اضغط على "تحديث البيانات" لرؤية البيانات في جدول
+### 7. استكشاف الأخطاء
+إذا واجهت مشاكل، راجع ملف [troubleshooting.md](troubleshooting.md) للحلول الشائعة.
 
 ## ملاحظات مهمة
 
