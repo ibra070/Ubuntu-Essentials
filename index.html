@@ -18,6 +18,10 @@
             justify-content: center;
             align-items: center;
             padding: 20px;
+            transition: background 0.3s;
+        }
+        body.dark-mode {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
         }
         .container {
             background: rgb(255, 255, 255);
@@ -26,11 +30,20 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.2);
             max-width: 500px;
             width: 100%;
+            transition: all 0.3s;
+        }
+        body.dark-mode .container {
+            background: #2d2d44;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
         h2 {
             text-align: center;
             color: #333;
             margin-bottom: 30px;
+            transition: color 0.3s;
+        }
+        body.dark-mode h2 {
+            color: #fff;
         }
         .form-group {
             margin-bottom: 20px;
@@ -40,6 +53,10 @@
             margin-bottom: 8px;
             color: #555;
             font-weight: 600;
+            transition: color 0.3s;
+        }
+        body.dark-mode label {
+            color: #ccc;
         }
         input, textarea {
             width: 100%;
@@ -47,7 +64,12 @@
             border: 2px solid #e0e0e0;
             border-radius: 6px;
             font-size: 14px;
-            transition: border-color 0.3s;
+            transition: all 0.3s;
+        }
+        body.dark-mode input {
+            background: #3d3d5c;
+            border-color: #4d4d6c;
+            color: #fff;
         }
         input:focus, textarea:focus {
             outline: none;
@@ -63,31 +85,328 @@
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
-            transition: transform 0.2s;
+            transition: all 0.3s;
         }
         button:hover {
             transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        .tabs {
+            display: flex;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        .tab {
+            flex: 1;
+            padding: 12px;
+            text-align: center;
+            cursor: pointer;
+            color: #888;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        .tab.active {
+            color: #667eea;
+            border-bottom: 2px solid #667eea;
+            margin-bottom: -2px;
+        }
+        .form-content {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+        .form-content.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Dark Mode Toggle */
+        .dark-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            width: auto;
+            padding: 10px;
+            font-size: 20px;
+        }
+        
+        /* Password Container */
+        .password-wrapper {
+            position: relative;
+        }
+        .password-wrapper input {
+            padding-right: 40px;
+        }
+        .toggle-password {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #888;
+            background: none;
+            width: auto;
+            padding: 0;
+            font-size: 18px;
+        }
+        
+        /* Password Strength */
+        .password-strength {
+            height: 5px;
+            margin-top: 8px;
+            border-radius: 3px;
+            background: #e0e0e0;
+            overflow: hidden;
+        }
+        .password-strength-bar {
+            height: 100%;
+            width: 0;
+            transition: all 0.3s;
+            border-radius: 3px;
+        }
+        .strength-weak { width: 25%; background: #ff4444; }
+        .strength-fair { width: 50%; background: #ffaa00; }
+        .strength-good { width: 75%; background: #88cc00; }
+        .strength-strong { width: 100%; background: #00cc44; }
+        .strength-text {
+            font-size: 12px;
+            margin-top: 5px;
+            color: #888;
+        }
+        
+        /* Remember Me */
+        .remember-me {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .remember-me input {
+            width: auto;
+            margin-right: 8px;
+        }
+        body.dark-mode .remember-me label {
+            color: #ccc;
         }
     </style>
 </head>
 <body>
+    <button class="dark-toggle" onclick="toggleDarkMode()" title="تبديل الوضع">🌙</button>
     <div class="container">
-        <h2>اتصل بنا</h2>
-        <form>
-            <div class="form-group">
-                <label for="name">الاسم</label>
-                <input type="text" id="name" name="name" required>
-            </div>
-            <div class="form-group">
-                <label for="email">البريد الإلكتروني</label>
-                <input type="email" id="email" name="email" required>
-            </div>
-            <div class="form-group">
-                <label for="message">الرسالة</label>
-                <textarea id="message" name="message" rows="5" required></textarea>
-            </div>
-            <button type="submit">إرسال</button>
-        </form>
+        <h2 id="formTitle">تسجيل الدخول</h2>
+        <div class="tabs">
+            <div class="tab active" onclick="switchTab('login')">تسجيل الدخول</div>
+            <div class="tab" onclick="switchTab('register')">إنشاء حساب</div>
+        </div>
+        
+        <!-- Login Form -->
+        <div id="loginForm" class="form-content active">
+            <form>
+                <div class="form-group">
+                    <label for="loginEmail">البريد الإلكتروني</label>
+                    <input type="email" id="loginEmail" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">كلمة المرور</label>
+                    <div class="password-wrapper">
+                        <input type="password" id="loginPassword" name="password" required>
+                        <span class="toggle-password" onclick="togglePassword('loginPassword')">👁️</span>
+                    </div>
+                </div>
+                <div class="remember-me">
+                    <input type="checkbox" id="rememberMe">
+                    <label for="rememberMe">تذكرني</label>
+                </div>
+                <button type="submit">دخول</button>
+            </form>
+        </div>
+        
+        <!-- Register Form -->
+        <div id="registerForm" class="form-content">
+            <form>
+                <div class="form-group">
+                    <label for="registerName">الاسم</label>
+                    <input type="text" id="registerName" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerEmail">البريد الإلكتروني</label>
+                    <input type="email" id="registerEmail" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerPassword">كلمة المرور</label>
+                    <div class="password-wrapper">
+                        <input type="password" id="registerPassword" name="password" required oninput="checkPasswordStrength()">
+                        <span class="toggle-password" onclick="togglePassword('registerPassword')">👁️</span>
+                    </div>
+                    <div class="password-strength">
+                        <div class="password-strength-bar" id="strengthBar"></div>
+                    </div>
+                    <div class="strength-text" id="strengthText"></div>
+                </div>
+                <div class="form-group">
+                    <label for="confirmPassword">تأكيد كلمة المرور</label>
+                    <div class="password-wrapper">
+                        <input type="password" id="confirmPassword" name="confirmPassword" required>
+                        <span class="toggle-password" onclick="togglePassword('confirmPassword')">👁️</span>
+                    </div>
+                </div>
+                <button type="submit">إنشاء حساب</button>
+            </form>
+        </div>
     </div>
+    
+    <script>
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load dark mode
+            if (localStorage.getItem('darkMode') === 'true') {
+                document.body.classList.add('dark-mode');
+            }
+            // Load remembered user
+            if (localStorage.getItem('rememberedEmail')) {
+                document.getElementById('loginEmail').value = localStorage.getItem('rememberedEmail');
+                document.getElementById('rememberMe').checked = true;
+            }
+        });
+
+        function switchTab(tab) {
+            const loginForm = document.getElementById('loginForm');
+            const registerForm = document.getElementById('registerForm');
+            const tabs = document.querySelectorAll('.tab');
+            const title = document.getElementById('formTitle');
+            
+            if (tab === 'login') {
+                loginForm.classList.add('active');
+                registerForm.classList.remove('active');
+                tabs[0].classList.add('active');
+                tabs[1].classList.remove('active');
+                title.textContent = 'تسجيل الدخول';
+            } else {
+                loginForm.classList.remove('active');
+                registerForm.classList.add('active');
+                tabs[0].classList.remove('active');
+                tabs[1].classList.add('active');
+                title.textContent = 'إنشاء حساب';
+            }
+        }
+
+        // Dark Mode Toggle
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+            localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
+        }
+
+        // Toggle Password Visibility
+        function togglePassword(inputId) {
+            const input = document.getElementById(inputId);
+            input.type = input.type === 'password' ? 'text' : 'password';
+        }
+
+        // Password Strength Meter
+        function checkPasswordStrength() {
+            const password = document.getElementById('registerPassword').value;
+            const strengthBar = document.getElementById('strengthBar');
+            const strengthText = document.getElementById('strengthText');
+            
+            let strength = 0;
+            if (password.length >= 6) strength++;
+            if (password.length >= 10) strength++;
+            if (/[A-Z]/.test(password)) strength++;
+            if (/[0-9]/.test(password)) strength++;
+            if (/[^A-Za-z0-9]/.test(password)) strength++;
+            
+            strengthBar.className = 'password-strength-bar';
+            if (password.length === 0) {
+                strengthText.textContent = '';
+            } else if (strength <= 1) {
+                strengthBar.classList.add('strength-weak');
+                strengthText.textContent = 'ضعيفة';
+            } else if (strength <= 2) {
+                strengthBar.classList.add('strength-fair');
+                strengthText.textContent = 'متوسطة';
+            } else if (strength <= 3) {
+                strengthBar.classList.add('strength-good');
+                strengthText.textContent = 'جيدة';
+            } else {
+                strengthBar.classList.add('strength-strong');
+                strengthText.textContent = 'قوية';
+            }
+        }
+
+        // Form Validation
+        function validateEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
+
+        function validatePassword(password) {
+            return password.length >= 6;
+        }
+
+        // Login Form
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            const rememberMe = document.getElementById('rememberMe').checked;
+            
+            if (!validateEmail(email)) {
+                alert('الرجاء إدخال بريد إلكتروني صحيح');
+                return;
+            }
+            if (!validatePassword(password)) {
+                alert('كلمة المرور يجب أن تكون 6 أحرف على الأقل');
+                return;
+            }
+            
+            // Remember me
+            if (rememberMe) {
+                localStorage.setItem('rememberedEmail', email);
+            } else {
+                localStorage.removeItem('rememberedEmail');
+            }
+            
+            alert('تم تسجيل الدخول بنجاح!');
+        });
+
+        // Register Form
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const name = document.getElementById('registerName').value;
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            if (name.trim().length < 2) {
+                alert('الرجاء إدخال اسم صحيح');
+                return;
+            }
+            if (!validateEmail(email)) {
+                alert('الرجاء إدخال بريد إلكتروني صحيح');
+                return;
+            }
+            if (!validatePassword(password)) {
+                alert('كلمة المرور يجب أن تكون 6 أحرف على الأقل');
+                return;
+            }
+            if (password !== confirmPassword) {
+                alert('كلمات المرور غير متطابقة');
+                return;
+            }
+            
+            // Save to localStorage
+            const users = JSON.parse(localStorage.getItem('users') || '[]');
+            if (users.find(u => u.email === email)) {
+                alert('هذا البريد الإلكتروني مسجل مسبقاً');
+                return;
+            }
+            users.push({ name, email, password });
+            localStorage.setItem('users', JSON.stringify(users));
+            
+            alert('تم إنشاء الحساب بنجاح!');
+        });
+    </script>
 </body>
 </html>
