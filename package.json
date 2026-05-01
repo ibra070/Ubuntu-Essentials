@@ -1,0 +1,20 @@
+{
+  "name": "login-registration-form",
+  "version": "1.0.0",
+  "description": "نموذج تسجيل دخول وإنشاء حساب مع حفظ البيانات في Google Sheets",
+  "main": "index.html",
+  "scripts": {
+    "start": "python -m http.server 8000",
+    "test": "echo 'افتح test-google-sheets.html في المتصفح'"
+  },
+  "keywords": ["login", "registration", "google-sheets", "html", "javascript"],
+  "author": "",
+  "license": "MIT",
+  "files": [
+    "index.html",
+    "test/test-google-sheets.html",
+    "config.js",
+    "google-apps-script.js",
+    "README-Google-Sheets.md"
+  ]
+}

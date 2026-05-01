@@ -256,7 +256,7 @@
             </form>
         </div>
     </div>
-    
+    <script src="config.js"></script>
     <script>
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
@@ -372,7 +372,7 @@
         });
 
         // Register Form
-        document.getElementById('registerForm').addEventListener('submit', function(e) {
+        document.getElementById('registerForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             const name = document.getElementById('registerName').value;
             const email = document.getElementById('registerEmail').value;
@@ -396,16 +396,37 @@
                 return;
             }
             
-            // Save to localStorage
-            const users = JSON.parse(localStorage.getItem('users') || '[]');
-            if (users.find(u => u.email === email)) {
-                alert('هذا البريد الإلكتروني مسجل مسبقاً');
-                return;
+            try {
+                // استخدام رابط Google Apps Script من config.js
+                const response = await fetch(CONFIG.GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        name: name,
+                        email: email,
+                        password: password,
+                        timestamp: new Date().toISOString()
+                    })
+                });
+                
+                const result = await response.json();
+                if (result.success) {
+                    alert('تم إنشاء الحساب بنجاح وحفظ البيانات في Google Sheets!');
+                    // مسح النموذج
+                    document.getElementById('registerForm').reset();
+                } else {
+                    alert('حدث خطأ في حفظ البيانات: ' + result.error);
+                }
+            } catch (error) {
+                alert('حدث خطأ في الاتصال: ' + error.message);
+                // fallback: حفظ محلياً
+                const users = JSON.parse(localStorage.getItem('users') || '[]');
+                users.push({ name, email, password });
+                localStorage.setItem('users', JSON.stringify(users));
+                alert('تم الحفظ محلياً بسبب مشكلة في الاتصال');
             }
-            users.push({ name, email, password });
-            localStorage.setItem('users', JSON.stringify(users));
-            
-            alert('تم إنشاء الحساب بنجاح!');
         });
     </script>
 </body>
